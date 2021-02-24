@@ -80,4 +80,11 @@ async def ping(ctx: commands.Context):
     await message.edit(content=f"{f} ms.")
 
 
+@bot.command(aliases=["src", "git"])
+async def source(ctx: commands.Context):
+    """Sends the bots source code."""
+
+    await ctx.send("<https://github.com/kal-byte/bottom-bot>")
+
+
 bot.run(config.token)
