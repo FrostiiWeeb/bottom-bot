@@ -32,13 +32,13 @@ class Owner(commands.Cog):
 
             fields = {"name": "Output", "value": f"```\n{stdout}```"}
             embed = self.bot.embed(ctx, fields=fields)
-            await ctx.send(embed=embed)
+            await (ctx << embed)
 
     @commands.command()
     async def restart(self, ctx: commands.Context):
         """Restarts the bot."""
 
-        await ctx.send("\U0001f97a Bye Bye")
+        await (ctx << "\U0001f97a Bye Bye")
         await self.bot.close()
 
     @commands.command(name="eval")
@@ -65,7 +65,7 @@ class Owner(commands.Cog):
 
         if value := out.getvalue():
             out.close()
-            return await ctx.send(value)
+            return await (ctx << value)
 
         out.close()
 
@@ -73,13 +73,13 @@ class Owner(commands.Cog):
             res = "\u200b"
 
         if isinstance(res, discord.Embed):
-            return await ctx.send(embed=res)
+            return await (ctx << embed)
 
         elif isinstance(res, (str, int)):
-            return await ctx.send(res)
+            return await (ctx << res)
 
         else:
-            return await ctx.send(repr(res))
+            return await (ctx << repr(res))
 
 
 def setup(bot):
