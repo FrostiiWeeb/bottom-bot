@@ -25,7 +25,9 @@ class Owner(commands.Cog):
     async def reload(self, ctx: commands.Context):
         """Realoads all the currently loaded extensions."""
 
-        for extension in self.bot.extensions:
+        extensions = [*self.bot.extensions.keys()]
+
+        for extension in extensions:
             try:
                 self.bot.reload_extension(extension)
             except Exception as e:
