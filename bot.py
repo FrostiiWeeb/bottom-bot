@@ -54,6 +54,10 @@ class Bot(commands.Bot):
     async def on_ready(self):
         print('Logged on as {0} (ID: {0.id})'.format(self.user))
 
+    async def close(self):
+        await self.session.close()
+        await super().close()
+
     async def on_command_error(self, ctx: commands.Context, error: Exception):
         ignored = (commands.CommandNotFound, commands.NotOwner)
 
