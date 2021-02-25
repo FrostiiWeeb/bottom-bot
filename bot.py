@@ -113,7 +113,10 @@ async def _eval(ctx: commands.Context, *, code: utils.get_code):
         res = await locals()["_eval_expr"]()
 
     if value := out.getvalue():
+        out.close()
         return await ctx.send(value)
+
+    out.close()
 
     if isinstance(res, discord.Embed):
         return await ctx.send(embed=res)
