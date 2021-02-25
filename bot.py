@@ -5,6 +5,7 @@ from discord.ext import commands
 import aiohttp
 import discord
 import config
+import utils
 import time
 
 
@@ -36,6 +37,9 @@ class Bot(commands.Bot):
         await self.wait_until_ready()
 
         self.session = aiohttp.ClientSession()
+
+    async def get_context(self, message: discord.Message, *, cls: utils.Context = None):
+        return await super().get_context(message, cls=cls or utils.Context)
 
     async def mystbin(self, data: str):
         data = bytes(data, 'utf-8')
