@@ -22,6 +22,18 @@ class Owner(commands.Cog):
         return await self.bot.is_owner(ctx.author)
 
     @commands.command()
+    async def reload(self, ctx: commands.Context):
+        """Realoads all the currently loaded extensions."""
+
+        for extension in self.bot.extensions:
+            try:
+                self.bot.reload_extension(extension)
+            except Exception as e:
+                await (ctx << f"{type(e).__class__} - {e}")
+
+        await (ctx << "Successfully reloaded all extensions.")
+
+    @commands.command()
     async def pull(self, ctx: commands.Context):
         """Pulls the latest code from the repo."""
 
