@@ -12,4 +12,4 @@ def get_code(codeblock: str):
         else:
             code.pop(len(code) - 1)
 
-    return "".join(code)
+    return "\n".join(code)
