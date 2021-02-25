@@ -57,7 +57,7 @@ class Bottom(commands.Cog):
             encoded = await self.bot.mystbin(encoded)
 
         content = f"```py\n{encoded}```"
-        await ctx.send(content)
+        await (ctx << content)
 
     @commands.command()
     async def decode(self, ctx: commands.Context, *, text: str):
@@ -66,13 +66,13 @@ class Bottom(commands.Cog):
         try:
             decoded = await self.unbottomify(text)
         except TypeError:
-            return await ctx.send("This bottom text doesn't seem right.")
+            return await (ctx << "This bottom text doesn't seem right.")
 
         if len(decoded) > 750:
             decoded = await self.bot.mystbin(decoded)
 
         content = f"```py\n{decoded}```"
-        await ctx.send(content)
+        await (ctx << content)
 
 
 def setup(bot):

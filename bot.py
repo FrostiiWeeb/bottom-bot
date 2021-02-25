@@ -82,7 +82,7 @@ class Bot(commands.Bot):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send_help(ctx.command)
 
-        await ctx.send(f"{type(error).__name__} - {error}")
+        await (ctx << f"{type(error).__name__} - {error}")
         raise error
 
 
@@ -94,7 +94,7 @@ async def ping(ctx: commands.Context):
     """Basic ping command."""
 
     s = time.perf_counter()
-    message = await ctx.send("Pong.")
+    message = await (ctx << "Pong.")
     f = round((time.perf_counter() - s) * 1000, 2)
     await message.edit(content=f"{f} ms.")
 
@@ -103,7 +103,7 @@ async def ping(ctx: commands.Context):
 async def source(ctx: commands.Context):
     """Sends the bots source code."""
 
-    await ctx.send("<https://github.com/kal-byte/bottom-bot>")
+    await (ctx << "<https://github.com/kal-byte/bottom-bot>")
 
 
 bot.run(config.token)
