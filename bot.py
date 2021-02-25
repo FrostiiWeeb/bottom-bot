@@ -46,7 +46,11 @@ class Bot(commands.Bot):
 
     def embed(self, ctx: commands.Context = None, **kwargs):
         kwargs.setdefault("colour", discord.Colour.red())
+        fields = kwargs.pop("fields", [])
         embed = discord.Embed(**kwargs)
+
+        for field in fields:
+            embed.add_field(**field)
 
         embed.set_footer(
             text=f"Requested by {ctx.author}" if ctx else discord.Embed.Empty,
