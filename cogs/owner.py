@@ -73,7 +73,7 @@ class Owner(commands.Cog):
             res = "\u200b"
 
         if isinstance(res, discord.Embed):
-            return await (ctx << embed)
+            return await (ctx << res)
 
         elif isinstance(res, (str, int)):
             return await (ctx << res)
