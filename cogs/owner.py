@@ -44,7 +44,8 @@ class Owner(commands.Cog):
         """Evaluates python code."""
 
         env = {
-            "ctx": ctx
+            "ctx": ctx,
+            "codeblock": lambda c, l: f"```{l}\n{c}```"
         }
         env.update(globals())
 
