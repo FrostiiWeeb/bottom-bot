@@ -83,6 +83,9 @@ class Owner(commands.Cog):
 
         out.close()
 
+        if not res:
+            return
+
         if res == "":
             res = "\u200b"
 
