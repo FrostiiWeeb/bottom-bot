@@ -30,8 +30,8 @@ class Owner(commands.Cog):
             res = await self.bot.loop.run_in_executor(None, func)
             stdout = res.stdout.decode("utf-8")
 
-            embed = self.bot.embed(ctx)
-            embed.description = f"```\n{stdout}```"
+            fields = {"name": "Output", "value": f"```\n{stdout}```"}
+            embed = self.bot.embed(ctx, fields=fields)
             await ctx.send(embed=embed)
 
     @commands.command()
