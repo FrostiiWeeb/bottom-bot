@@ -25,13 +25,14 @@ class Owner(commands.Cog):
     async def pull(self, ctx: commands.Context):
         """Pulls the latest code from the repo."""
 
-        func = functools.partial(git_pull)
-        res = await self.bot.loop.run_in_executor(None, func)
-        stdout = res.stdout.decode("utf-8")
+        async with ctx.typing():
+            func = functools.partial(git_pull)
+            res = await self.bot.loop.run_in_executor(None, func)
+            stdout = res.stdout.decode("utf-8")
 
-        embed = self.bot.embed(ctx)
-        embed.description = f"```\n{stdout}```"
-        await ctx.send(embed=embed)
+            embed = self.bot.embed(ctx)
+            embed.description = f"```\n{stdout}```"
+            await ctx.send(embed=embed)
 
     @commands.command()
     async def restart(self, ctx: commands.Context):
@@ -66,6 +67,9 @@ class Owner(commands.Cog):
             return await ctx.send(value)
 
         out.close()
+
+        if res == "":
+            res = "\u200b"
 
         if isinstance(res, discord.Embed):
             return await ctx.send(embed=res)
