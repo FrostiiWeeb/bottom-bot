@@ -22,11 +22,14 @@ class Bottom(commands.Cog):
 
         if match := mystbin_url.match(txt):
             paste_id = match.group("ID")
-            async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
-                if resp.status != 200:
-                    return utils.to_bottom(txt)
-                data = await resp.json()
-                return utils.to_bottom(data["data"])
+            try:
+                async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
+                    if resp.status != 200:
+                        return utils.to_bottom(txt)
+                    data = await resp.json()
+                    return utils.to_bottom(data["data"])
+            except:
+                return utils.to_bottom(txt)
         return utils.to_bottom(txt)
 
     async def unbottomify(self, txt: str):
@@ -34,11 +37,14 @@ class Bottom(commands.Cog):
 
         if match := mystbin_url.match(txt):
             paste_id = match.group("ID")
-            async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
-                if resp.status != 200:
-                    return utils.from_bottom(txt)
-                data = await resp.json()
-                return utils.from_bottom(data["data"])
+            try:
+                async with self.bot.session.get(f"https://mystb.in/api/pastes/{paste_id}") as resp:
+                    if resp.status != 200:
+                        return utils.from_bottom(txt)
+                    data = await resp.json()
+                    return utils.from_bottom(data["data"])
+            except:
+                return utils.to_bottom(txt)
         return utils.from_bottom(txt)
 
     @commands.command()
