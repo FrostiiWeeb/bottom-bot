@@ -1,17 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from contextlib import redirect_stdout
 from discord.ext import commands
-import textwrap
 import aiohttp
-import asyncio
 import discord
 import config
-import utils
 import time
-import os
-import io
 
 
 prefixes = ["\U0001f97a ", "\U0000005c\U0001f97a ", "\U0001f97a", "\U0000005c\U0001f97a"]
@@ -88,44 +82,6 @@ async def source(ctx: commands.Context):
     """Sends the bots source code."""
 
     await ctx.send("<https://github.com/kal-byte/bottom-bot>")
-
-
-@bot.command(name="eval")
-@commands.is_owner()
-async def _eval(ctx: commands.Context, *, code: utils.get_code):
-    """Evaluates python code."""
-
-    env = {
-        "ctx": ctx
-    }
-    env.update(globals())
-
-    block = (
-        "async def _eval_expr():\n" + \
-        textwrap.indent(code, "  ")
-    )
-
-    out = io.StringIO()
-
-    exec(block, env, locals())
-
-    with redirect_stdout(out):
-        res = await locals()["_eval_expr"]()
-
-    if value := out.getvalue():
-        out.close()
-        return await ctx.send(value)
-
-    out.close()
-
-    if isinstance(res, discord.Embed):
-        return await ctx.send(embed=res)
-
-    elif isinstance(res, (str, int)):
-        return await ctx.send(res)
-
-    else:
-        return await ctx.send(repr(res))
 
 
 bot.run(config.token)
