@@ -49,8 +49,12 @@ class Bot(commands.Bot):
         fields = kwargs.pop("fields", [])
         embed = discord.Embed(**kwargs)
 
-        for field in fields:
-            embed.add_field(**field)
+        if fields:
+            if isinstance(fields, dict):
+                fields = [fields,]
+
+            for field in fields:
+                embed.add_field(**field)
 
         embed.set_footer(
             text=f"Requested by {ctx.author}" if ctx else discord.Embed.Empty,

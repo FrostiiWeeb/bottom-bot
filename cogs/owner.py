@@ -38,6 +38,7 @@ class Owner(commands.Cog):
     async def restart(self, ctx: commands.Context):
         """Restarts the bot."""
 
+        await ctx.send("\U0001f97a Bye Bye")
         await self.bot.close()
 
     @commands.command(name="eval")
