@@ -10,7 +10,7 @@ class Context(commands.Context):
             return self.bot.loop.create_task(self.send(embed=content))
 
         if isinstance(content, discord.File):
-            return self.bot.loop.create_task(self.send(file=file))
+            return self.bot.loop.create_task(self.send(file=content))
 
         return self.bot.loop.create_task(self.send(content))
 
