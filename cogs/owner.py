@@ -40,7 +40,6 @@ class Owner(commands.Cog):
         await self.bot.close()
 
     @commands.command(name="eval")
-    @commands.is_owner()
     async def _eval(ctx: commands.Context, *, code: utils.get_code):
         """Evaluates python code."""
 
