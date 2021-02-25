@@ -44,6 +44,16 @@ class Bot(commands.Bot):
             key = res["key"]
             return f"https://mystb.in/{key}"
 
+    def embed(self, ctx: commands.Context = None, **kwargs):
+        kwargs.setdefault("colour", discord.Colour.red())
+        embed = discord.Embed(**kwargs)
+
+        embed.set_footer(
+            text=f"Requested by {ctx.author}" if ctx else discord.Embed.Empty,
+            icon_url=str(ctx.author.avatar_url) if ctx else discord.Embed.Empty
+        )
+        return embed
+
     async def on_ready(self):
         print('Logged on as {0} (ID: {0.id})'.format(self.user))
 
