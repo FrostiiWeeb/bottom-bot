@@ -69,9 +69,7 @@ class Owner(commands.Cog):
             "async def _eval_expr():\n" + \
             textwrap.indent(code, "  ")
         )
-
         out = io.StringIO()
-
         exec(block, env, locals())
 
         with redirect_stdout(out):
