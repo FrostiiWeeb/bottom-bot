@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-from discord.ext import commands
+from discord.ext import commands, reactioncommands
 import aiohttp
+import asyncio
 import discord
 import config
 import utils
@@ -16,9 +17,11 @@ async def get_prefix(bot: commands.Bot, message: discord.Message):
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
 
-class Bot(commands.Bot):
+class Bot(reactioncommands.ReactionBot):
     def __init__(self, **kwargs):
         kwargs.setdefault("help_command", commands.MinimalHelpCommand())
+        kwargs.setdefault("prefix_emoji", "\U0001f97a")
+        kwargs.setdefault("listening_emoji", "\U0001f449")
         super().__init__(get_prefix, **kwargs)
 
         self.session: aiohttp.ClientSession
@@ -48,7 +51,7 @@ class Bot(commands.Bot):
             key = res["key"]
             return f"https://mystb.in/{key}"
 
-    def embed(self, ctx: commands.Context = None, **kwargs):
+    def embed(self, ctx: utils.Context = None, **kwargs):
         kwargs.setdefault("colour", discord.Colour.red())
         fields = kwargs.pop("fields", [])
         embed = discord.Embed(**kwargs)
@@ -73,7 +76,7 @@ class Bot(commands.Bot):
         await self.session.close()
         await super().close()
 
-    async def on_command_error(self, ctx: commands.Context, error: Exception):
+    async def on_command_error(self, ctx: utils.Context, error: Exception):
         ignored = (commands.CommandNotFound, commands.NotOwner)
 
         if isinstance(error, ignored):
@@ -82,15 +85,54 @@ class Bot(commands.Bot):
         if isinstance(error, commands.MissingRequiredArgument):
             return await ctx.send_help(ctx.command)
 
-        await (ctx << f"{type(error).__name__} - {error}")
+        # await (ctx << f"{type(error).__name__} - {error}")
+        await ctx.send(f"{type(error).__name__} - {error}")
         raise error
 
 
 bot = Bot(allowed_mentions=discord.AllowedMentions.none())
 
 
+@bot.reaction_command("\U0001f476", hidden=True)
+async def r_encode(ctx: utils.Context):
+    await ctx.send("Please send the text you'd like to turn into bottom.")
+    try:
+        message = await bot.wait_for(
+            "message",
+            timeout=30.0,
+            check=lambda m: all((
+                m.author == ctx.author,
+                m.channel == ctx.channel
+            ))
+        )
+    except asyncio.TimeoutError:
+        return await ctx.send("You took long to respond!")
+    else:
+        cmd = bot.get_command("encode")
+        await cmd(ctx, text=message.content)
+
+
+@bot.reaction_command("\U0001f62d", hidden=True)
+async def r_decode(ctx: utils.Context):
+    await ctx.send("Please send the text you'd like to turn convert from bottom.")
+    try:
+        message = await bot.wait_for(
+            "message",
+            timeout=30.0,
+            check=lambda m: all((
+                m.author == ctx.author,
+                m.channel == ctx.channel
+            ))
+        )
+    except asyncio.TimeoutError:
+        return await ctx.send("You took long to respond!")
+    else:
+        cmd = bot.get_command("decode")
+        await cmd(ctx, text=message.content)
+
+
 @bot.command()
-async def ping(ctx: commands.Context):
+async def ping(ctx: utils.Context):
     """Basic ping command."""
 
     s = time.perf_counter()
@@ -100,7 +142,7 @@ async def ping(ctx: commands.Context):
 
 
 @bot.command(aliases=["src", "git"])
-async def source(ctx: commands.Context):
+async def source(ctx: utils.Context):
     """Sends the bots source code."""
 
     await (ctx << "<https://github.com/kal-byte/bottom-bot>")

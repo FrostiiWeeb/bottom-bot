@@ -57,7 +57,7 @@ class Bottom(commands.Cog):
             encoded = await self.bot.mystbin(encoded)
 
         content = f"```py\n{encoded}```"
-        await (ctx << content)
+        await ctx.send(content)
 
     @commands.command()
     async def decode(self, ctx: commands.Context, *, text: str):
@@ -72,7 +72,7 @@ class Bottom(commands.Cog):
             decoded = await self.bot.mystbin(decoded)
 
         content = f"```py\n{decoded}```"
-        await (ctx << content)
+        await ctx.send(content)
 
 
 def setup(bot):
