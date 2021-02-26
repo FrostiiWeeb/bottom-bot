@@ -13,6 +13,14 @@ import time
 prefixes = ["\U0001f97a ", "\U0000005c\U0001f97a ", "\U0001f97a", "\U0000005c\U0001f97a"]
 
 
+desc = """
+There's like 2 commands that aren't actaully commands but do the same functionality as the other ones so how to do them is reaction with 🥺 on any message and then the bot will respond with 👉 so then you can do:
+👶 - Encode a message
+😭 - Decode a message
+Once you've added them, remove your 🥺 and then it will ask you to input the respective text.
+"""
+
+
 async def get_prefix(bot: commands.Bot, message: discord.Message):
     return commands.when_mentioned_or(*prefixes)(bot, message)
 
@@ -90,7 +98,7 @@ class Bot(reactioncommands.ReactionBot):
         raise error
 
 
-bot = Bot(allowed_mentions=discord.AllowedMentions.none())
+bot = Bot(allowed_mentions=discord.AllowedMentions.none(), description=desc)
 
 
 @bot.reaction_command("\U0001f476", hidden=True)
