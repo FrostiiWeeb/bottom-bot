@@ -64,9 +64,8 @@ class Owner(commands.Cog):
             res = await self.bot.loop.run_in_executor(None, func)
             stdout = res.stdout.decode("utf-8")
 
-            fields = {"name": "Output", "value": f"```\n{stdout}```"}
-            embed = self.bot.embed(ctx, fields=fields)
-            await (ctx << embed)
+            content = f"```\n{stdout}```"
+            await (ctx << content)
 
     @commands.command(name="eval")
     async def _eval(self, ctx: utils.Context, *, code: utils.get_code):
