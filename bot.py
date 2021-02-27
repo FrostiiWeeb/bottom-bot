@@ -156,4 +156,13 @@ async def source(ctx: utils.Context):
     await (ctx << "<https://github.com/kal-byte/bottom-bot>")
 
 
+@bot.command(aliases=["about"])
+async def info(ctx: utils.Context):
+    """Sends basic info on the bot."""
+
+    embed = bot.embed(ctx)
+    embed.description = "This bot has no reason to exist. Made by kal#1806."
+    await (ctx << embed)
+
+
 bot.run(config.token)
