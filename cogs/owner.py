@@ -18,11 +18,11 @@ class Owner(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    async def cog_check(self, ctx: commands.Context):
+    async def cog_check(self, ctx: utils.Context):
         return await self.bot.is_owner(ctx.author)
 
     @commands.command()
-    async def reload(self, ctx: commands.Context):
+    async def reload(self, ctx: utils.Context):
         """Realoads all the currently loaded extensions."""
 
         extensions = [*self.bot.extensions.keys()]
@@ -36,7 +36,7 @@ class Owner(commands.Cog):
         await (ctx << "Successfully reloaded all extensions.")
 
     @commands.command()
-    async def pull(self, ctx: commands.Context):
+    async def pull(self, ctx: utils.Context):
         """Pulls the latest code from the repo."""
 
         async with ctx.typing():
@@ -49,14 +49,27 @@ class Owner(commands.Cog):
             await (ctx << embed)
 
     @commands.command()
-    async def restart(self, ctx: commands.Context):
+    async def restart(self, ctx: utils.Context):
         """Restarts the bot."""
 
         await (ctx << "\U0001f97a Bye Bye")
         await self.bot.close()
 
+    @commands.command(aliases=["sh"])
+    async def shell(self, ctx: utils.Context, *args):
+        """Runs given arguments into shell."""
+
+        async with ctx.typing():
+            func = functools.partial(subprocess.run, args, capture_output=True)
+            res = await self.bot.loop.run_in_executor(None, func)
+            stdout = res.stdout.decode("utf-8")
+
+            fields = {"name": "Output", "value": f"```\n{stdout}```"}
+            embed = self.bot.embed(ctx, fields=fields)
+            await (ctx << embed)
+
     @commands.command(name="eval")
-    async def _eval(self, ctx: commands.Context, *, code: utils.get_code):
+    async def _eval(self, ctx: utils.Context, *, code: utils.get_code):
         """Evaluates python code."""
 
         env = {
