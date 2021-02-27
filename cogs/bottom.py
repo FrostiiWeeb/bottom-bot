@@ -68,7 +68,7 @@ class Bottom(commands.Cog):
         except TypeError:
             return await (ctx << "This bottom text doesn't seem right.")
 
-        decoded = decoded.replace("`", "\u200b`")
+        decoded = decoded.replace("`", "`\u200b")
 
         if len(decoded) > 750:
             decoded = await self.bot.mystbin(decoded)
