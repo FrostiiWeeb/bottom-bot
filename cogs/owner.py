@@ -1,18 +1,22 @@
 # -*- coding: utf-8 -*-
 
 from contextlib import redirect_stdout
-from discord.ext import commands
 from datetime import datetime as dt
+from discord.ext import commands
 from typing import NamedTuple
-from collections import Counter
 import subprocess
 import functools
 import datetime
 import textwrap
 import discord
+import string
 import utils
 import io
 import re
+
+
+class DeltaTemplate(string.Template):
+    delimiter = "%"
 
 
 class TimeReason(NamedTuple):
@@ -20,43 +24,19 @@ class TimeReason(NamedTuple):
     time: dt
 
     def __repr__(self) -> str:
-        return f'<TimeReason "{self.reason}" time={self.time!r}>'
+        return f'<TimeReason time={self.time!r}> reason="{self.reason}"'
 
     def __str__(self) -> str:
-        now = dt.utcnow()
-        in_time = self.time - now
-        fmt = []
-        count = Counter()
-        days = in_time.days
-
-        if round(days / 365) >= 1:
-            count["years"] = round(days / 365)
-            days -= round(days % 365)
-
-        if round(days / 30) >= 1:
-            count["months"] = round(days / 30)
-            days -= round(days % 30)
-
-        if round(days / 7) >= 1:
-            count["weeks"] = round(days / 7)
-            days -= round(days % 7)
-
-        if days >= 1:
-            count["days"] = days
-
-        for k, v in count.items():
-            fmt.append(f"{v} {k}")
-
-        return ", ".join(fmt)
+        then = self.time - dt.utcnow()
 
 
-time_regex = re.compile(r"""(?:(?P<seconds>([0-9]+))\s*?(s|sec|secs|second|seconds))?
-                            (?:(?P<minutes>([0-9]+))\s*?(m|min|mins|minute|minutes))?
-                            (?:(?P<hours>([0-9]+))\s*?(h|hr|hrs|hour|hours))?
-                            (?:(?P<days>([0-9]+))\s*?(d|day|days))?
-                            (?:(?P<weeks>([0-9]+))\s*?(w|week|weeks))?
-                            (?:(?P<months>([0-9]+))\s*?(mo|month|months))?
-                            (?:(?P<years>([0-9]+))\s*?(y|yr|yrs|year|years))?""", re.I | re.X)
+time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
+                            (?:(?P<minutes>[0-9]+)\s*(minutes?|mins?|m))?
+                            (?:(?P<hours>[0-9]+)\s*(hours?|hr?s?))?
+                            (?:(?P<days>[0-9]+)\s*(days?|d))?
+                            (?:(?P<weeks>[0-9]+)\s*(weeks?|w))?
+                            (?:(?P<months>[0-9]+)\s*(months?|mo))?
+                            (?:(?P<years>[0-9]+)\s*(years?|yr?s?))?""", re.I | re.X)
 
 
 def git_pull():
@@ -83,6 +63,9 @@ class TimeConverter(commands.Converter):
                 for k, v in match.items():
                     if v:
                         times[k] = v
+
+            if not times:
+                return await (ctx << "test")
 
             for k, v in times.items():
                 amount = conversions.get(k)
