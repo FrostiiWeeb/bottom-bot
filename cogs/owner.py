@@ -26,23 +26,23 @@ class TimeReason(NamedTuple):
         in_time = self.time - now
         fmt = []
 
-        if y := in_time.year:
+        if y := in_time.years:
             plural = "years" if y > 1 else "year"
             fmt.append(f"{y} {plural}")
 
-        if m := in_time.month:
+        if m := in_time.months:
             plural = "month" if y > 1 else "month"
             fmt.append(f"{m} {plural}")
 
-        if d := in_time.day:
+        if d := in_time.days:
             plural = "days" if y > 1 else "day"
             fmt.append(f"{d} {plural}")
 
-        if h := in_time.hour:
+        if h := in_time.hours:
             plural = "hours" if y > 1 else "hour"
             fmt.append(f"{h} {plural}")
 
-        if m := in_time.minute:
+        if m := in_time.minutes:
             plural = "minutes" if y > 1 else "minute"
             fmt.append(f"{m} {plural}")
 
