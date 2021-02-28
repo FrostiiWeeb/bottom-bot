@@ -5,7 +5,7 @@ from discord.ext import commands
 
 class Context(commands.Context):
 
-    def __truediv__(self, content: t.Union[str, discord.Embed] = None):
+    def __truediv__(self, content: t.Union[str, discord.Embed, discord.File] = None):
         if isinstance(content, discord.Embed):
             return self.bot.loop.create_task(self.send(embed=content))
 
