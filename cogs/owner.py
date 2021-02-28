@@ -19,7 +19,7 @@ class TimeReason(NamedTuple):
     time: dt
 
     def __repr__(self) -> str:
-        return f"<TimeReason {reason} time={time!r}>"
+        return f"<TimeReason {self.reason} time={self.time!r}>"
 
     def __str__(self) -> str:
         now = dt.utcnow()
