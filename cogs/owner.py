@@ -64,7 +64,9 @@ class Owner(commands.Cog):
             res = await self.bot.loop.run_in_executor(None, func)
             stdout = res.stdout.decode("utf-8")
 
-            content = f"```\n{stdout}```"
+            syntax = args[-1].split(".")[-1] if args[0] == "cat" else ""
+
+            content = f"```{syntax}\n{stdout}```"
             await (ctx << content)
 
     @commands.command(name="eval")
