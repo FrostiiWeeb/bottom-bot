@@ -85,7 +85,7 @@ class TimeConverter(commands.Converter):
 
             for k, v in times.items():
                 amount = conversions.get(k)
-                secs = v * amount
+                secs = int(v) * amount
                 delta = datetime.timedelta(seconds=secs)
                 now += delta
 
