@@ -4,6 +4,7 @@ from contextlib import redirect_stdout
 from discord.ext import commands
 from datetime import datetime as dt
 from typing import NamedTuple
+from collections import Counter
 import subprocess
 import functools
 import datetime
@@ -19,32 +20,32 @@ class TimeReason(NamedTuple):
     time: dt
 
     def __repr__(self) -> str:
-        return f"<TimeReason {self.reason} time={self.time!r}>"
+        return f'<TimeReason "{self.reason}" time={self.time!r}>'
 
     def __str__(self) -> str:
         now = dt.utcnow()
         in_time = self.time - now
         fmt = []
+        count = Counter()
+        days = in_time.days
 
-        if y := in_time.years:
-            plural = "years" if y > 1 else "year"
-            fmt.append(f"{y} {plural}")
+        if round(days / 365) >= 1:
+            count["years"] = round(days / 365)
+            days -= round(days % 365)
 
-        if m := in_time.months:
-            plural = "month" if y > 1 else "month"
-            fmt.append(f"{m} {plural}")
+        if round(days / 30) >= 1:
+            count["months"] = round(days / 30)
+            days -= round(days % 30)
 
-        if d := in_time.days:
-            plural = "days" if y > 1 else "day"
-            fmt.append(f"{d} {plural}")
+        if round(days / 7) >= 1:
+            count["weeks"] = round(days / 7)
+            days -= round(days % 7)
 
-        if h := in_time.hours:
-            plural = "hours" if y > 1 else "hour"
-            fmt.append(f"{h} {plural}")
+        if days >= 1:
+            count["days"] = days
 
-        if m := in_time.minutes:
-            plural = "minutes" if y > 1 else "minute"
-            fmt.append(f"{m} {plural}")
+        for k, v in count.items():
+            fmt.append(f"{v} {k}")
 
         return ", ".join(fmt)
 
