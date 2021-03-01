@@ -44,7 +44,7 @@ class Bottom(commands.Cog):
                     data = await resp.json()
                     return utils.from_bottom(data["data"])
             except:
-                return utils.to_bottom(txt)
+                return utils.from_bottom(txt)
         return utils.from_bottom(txt)
 
     @commands.command()

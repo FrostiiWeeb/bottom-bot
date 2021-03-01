@@ -19,3 +19,7 @@ class Context(commands.Context):
 
     def __repr__(self):
         return "<NoOneCares at 0xShutUp>"
+
+    async def send(self, content: str = None, **kwargs):
+        content = content.replace(self.bot.http.token, "[My Token Was Here Lol]")
+        return await super().send(content, **kwargs)
