@@ -58,7 +58,7 @@ class TimeConverter(commands.Converter):
         now = dt.utcnow()
 
         if not time_regex.match(arg).group(0):
-            # Raise some error here
+            pass # Raise some error here
 
         if match := time_regex.finditer(arg):
             times = {}
