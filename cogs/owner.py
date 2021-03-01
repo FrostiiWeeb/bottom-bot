@@ -66,6 +66,7 @@ class TimeConverter(commands.Converter):
             for match in matches:
                 for k, v in match.items():
                     if v:
+                        v = int(v)
                         try:
                             times[k] += v
                         except KeyError:
@@ -73,7 +74,7 @@ class TimeConverter(commands.Converter):
 
             for k, v in times.items():
                 amount = conversions.get(k)
-                secs = int(v) * amount
+                secs = v * amount
                 delta = datetime.timedelta(seconds=secs)
                 now += delta
 
