@@ -24,7 +24,7 @@ class TimeReason(NamedTuple):
     time: dt
 
     def __repr__(self) -> str:
-        return f'<TimeReason time={self.time!r}> reason="{self.reason}"'
+        return f'<TimeReason time={self.time!r}> reason="{self.reason}">'
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
@@ -45,6 +45,7 @@ def git_pull():
 
 class TimeConverter(commands.Converter):
     async def convert(self, ctx: utils.Context, arg: str):
+
         conversions = {
             "seconds": 0,
             "minutes": 60,
@@ -56,16 +57,19 @@ class TimeConverter(commands.Converter):
 
         now = dt.utcnow()
 
+        if not time_regex.match(arg).group(0):
+            # Raise some error here
+
         if match := time_regex.finditer(arg):
             times = {}
             matches = [m.groupdict() for m in match if m.group(0)]
             for match in matches:
                 for k, v in match.items():
                     if v:
-                        times[k] = v
-
-            if not times:
-                return await (ctx << "test")
+                        try:
+                            times[k] += v
+                        except KeyError:
+                            times[k] = v
 
             for k, v in times.items():
                 amount = conversions.get(k)
