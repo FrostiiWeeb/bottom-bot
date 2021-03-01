@@ -15,19 +15,21 @@ import io
 import re
 
 
-class DeltaTemplate(string.Template):
-    delimiter = "%"
-
-
-class TimeReason(NamedTuple):
+class TimeReason(t.NamedTuple):
     reason: str
     time: dt
 
     def __repr__(self) -> str:
-        return f'<TimeReason time={self.time!r}> reason="{self.reason}">'
+        return f'<TimeReason time={self.time!r} reason="{self.reason}">'
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
+        humanized = humanize.precisedelta(
+            then,
+            suppress=["seconds"],
+            format="%0.0f"
+        )
+        return f"In {humanized}"
 
 
 time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
@@ -36,16 +38,12 @@ time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
                             (?:(?P<days>[0-9]+)\s*(days?|d))?
                             (?:(?P<weeks>[0-9]+)\s*(weeks?|w))?
                             (?:(?P<months>[0-9]+)\s*(months?|mo))?
-                            (?:(?P<years>[0-9]+)\s*(years?|yr?s?))?""", re.I | re.X)
-
-
-def git_pull():
-    return subprocess.run(["git", "pull"], capture_output=True)
+                            (?:(?P<years>[0-9]+)\s*(years?|yr?s?))?""",
+                            re.I | re.X)
 
 
 class TimeConverter(commands.Converter):
-    async def convert(self, ctx: utils.Context, arg: str):
-
+    async def convert(self, ctx: Context, arg: str):
         conversions = {
             "seconds": 0,
             "minutes": 60,
@@ -58,7 +56,10 @@ class TimeConverter(commands.Converter):
         now = dt.utcnow()
 
         if not time_regex.match(arg).group(0):
-            pass # Raise some error here
+            raise commands.BadArgument(
+                "Could not find a given time here. "
+                "Try something like `5 hours`."
+            )
 
         if match := time_regex.finditer(arg):
             times = {}
@@ -66,11 +67,7 @@ class TimeConverter(commands.Converter):
             for match in matches:
                 for k, v in match.items():
                     if v:
-                        v = int(v)
-                        try:
-                            times[k] += v
-                        except KeyError:
-                            times[k] = v
+                        times[k] = int(v)
 
             for k, v in times.items():
                 amount = conversions.get(k)
@@ -79,6 +76,10 @@ class TimeConverter(commands.Converter):
                 now += delta
 
             return TimeReason("Test", now)
+
+
+def git_pull():
+    return subprocess.run(["git", "pull"], capture_output=True)
 
 
 class Owner(commands.Cog):

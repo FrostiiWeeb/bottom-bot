@@ -160,7 +160,21 @@ async def source(ctx: utils.Context):
 async def info(ctx: utils.Context):
     """Sends basic info on the bot."""
 
-    embed = bot.embed(ctx)
+    permissions = discord.Permissions(
+        embed_links=True,
+        external_emojis=True,
+        read_message_history=True,
+        read_messages=True,
+        send_messages=True
+    )
+    invite = discord.utils.oauth_url(
+        ctx.me.id,
+        permissions
+    )
+
+    fields = {"name": "Invite Me", "value": f"[Here]({invite})"}
+
+    embed = bot.embed(ctx, fields=fields)
     embed.description = "This bot has no reason to exist. Made by kal#1806."
     await (ctx << embed)
 
