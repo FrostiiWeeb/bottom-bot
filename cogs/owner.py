@@ -15,7 +15,7 @@ import io
 import re
 
 
-class TimeReason(t.NamedTuple):
+class TimeReason(NamedTuple):
     reason: str
     time: dt
 
@@ -43,7 +43,7 @@ time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
 
 
 class TimeConverter(commands.Converter):
-    async def convert(self, ctx: Context, arg: str):
+    async def convert(self, ctx: utils.Context, arg: str):
         conversions = {
             "seconds": 0,
             "minutes": 60,
