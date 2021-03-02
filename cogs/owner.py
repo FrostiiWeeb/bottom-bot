@@ -26,7 +26,7 @@ class TimeReason(NamedTuple):
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
-        humanized = humanize.naturaldelta(then)
+        humanized = humanize.naturaltime(then)
         return humanized
 
 
@@ -53,12 +53,6 @@ class TimeConverter(commands.Converter):
 
         now = dt.utcnow()
 
-        if not time_regex.match(arg).group(0):
-            raise commands.BadArgument(
-                "Could not find a given time here. "
-                "Try something like `5 hours`."
-            )
-
         if match := time_regex.finditer(arg):
             times = {}
             matches = [m.groupdict() for m in match if m.group(0)]
@@ -66,6 +60,12 @@ class TimeConverter(commands.Converter):
                 for k, v in match.items():
                     if v:
                         times[k] = int(v)
+
+            if not times:
+                raise commands.BadArgument(
+                    "Could not find a given time here. "
+                    "Try something like `5 hours`."
+                )
 
             for k, v in times.items():
                 amount = conversions.get(k)
