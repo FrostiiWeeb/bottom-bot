@@ -30,19 +30,19 @@ class TimeReason(NamedTuple):
         days = Counter({"days": then.days})
         times = Counter()
 
-        while days > 365:
+        while days["days"] > 365:
             times["years"] += 1
             days["days"] -= 1
 
-        while days > 30:
+        while days["days"] > 30:
             times["months"] += 1
             days["days"] -= 1
 
-        while days > 7:
+        while days["days"] > 7:
             times["weeks"] += 1
             days["days"] -= 1
 
-        while days > 1:
+        while days["days"] > 1:
             times["days"] += 1
             days["days"] -= 1
 
