@@ -22,5 +22,6 @@ class Context(commands.Context):
 
     async def send(self, content: str = None, **kwargs):
         if content:
+            content = str(content)
             content = content.replace(self.bot.http.token, "[My Token Was Here Lol]")
         return await super().send(content, **kwargs)
