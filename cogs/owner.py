@@ -3,6 +3,7 @@
 from contextlib import redirect_stdout
 from datetime import datetime as dt
 from discord.ext import commands
+from collections import Counter
 from typing import NamedTuple
 import subprocess
 import functools
@@ -26,43 +27,38 @@ class TimeReason(NamedTuple):
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
-        days = then.days
-        times = {
-            "years": 0,
-            "months": 0,
-            "weeks": 0,
-            "days": 0,
-        }
+        days = Counter({"days": then.days})
+        times = Counter()
 
         while days > 365:
             times["years"] += 1
-            days -= 365
+            days["days"] -= 1
 
         while days > 30:
             times["months"] += 1
-            days -= 30
+            days["days"] -= 1
 
         while days > 7:
             times["weeks"] += 1
-            days -= 7
+            days["days"] -= 1
 
         while days > 1:
             times["days"] += 1
-            days -= 1
+            days["days"] -= 1
 
         fmt = []
 
         if times["years"]:
-            fmt.append(f"{times.get('years')} Years")
+            fmt.append(f"{times.get('years')} years")
 
         if times["months"]:
-            fmt.append(f"{times.get('months')} Months")
+            fmt.append(f"{times.get('months')} months")
 
         if times["weeks"]:
-            fmt.append(f"{times.get('weeks')} Weeks")
+            fmt.append(f"{times.get('weeks')} weeks")
 
         if times["days"]:
-            fmt.append(f"{times.get('days')} Days")
+            fmt.append(f"{times.get('days')} days")
 
         return ", ".join(fmt)
 
