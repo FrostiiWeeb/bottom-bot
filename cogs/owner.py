@@ -26,8 +26,45 @@ class TimeReason(NamedTuple):
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
-        humanized = humanize.naturaltime(then)
-        return humanized
+        days = then.days
+        times = {
+            "years": 0,
+            "months": 0,
+            "weeks": 0,
+            "days": 0,
+        }
+
+        while days > 365:
+            times["years"] += 1
+            days -= 365
+
+        while days > 30:
+            times["months"] += 1
+            days -= 30
+
+        while days > 7:
+            times["weeks"] += 1
+            days -= 7
+
+        while days > 1:
+            times["days"] += 1
+            days -= 1
+
+        fmt = []
+
+        if times["years"]:
+            fmt.append(f"{times.get('years')} Years")
+
+        if times["months"]:
+            fmt.append(f"{times.get('months')} Months")
+
+        if times["weeks"]:
+            fmt.append(f"{times.get('weeks')} Weeks")
+
+        if times["days"]:
+            fmt.append(f"{times.get('days')} Days")
+
+        return ", ".join(fmt)
 
 
 time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
