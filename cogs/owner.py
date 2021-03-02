@@ -8,6 +8,7 @@ import subprocess
 import functools
 import datetime
 import textwrap
+import asyncio
 import discord
 import string
 import utils
@@ -78,8 +79,16 @@ class TimeConverter(commands.Converter):
             return TimeReason("Test", now)
 
 
-def git_pull():
-    return subprocess.run(["git", "pull"], capture_output=True)
+async def run_shell(command: str) -> str:
+    proc = await asyncio.create_subprocess_shell(
+        command,
+        stdout=asyncio.subprocess.PIPE,
+        stderr=asyncio.subprocess.PIPE
+    )
+
+    stdout, stderr = await proc.communicate()
+
+    return stderr if stderr else stdout
 
 
 class Owner(commands.Cog):
@@ -110,9 +119,8 @@ class Owner(commands.Cog):
         """Pulls the latest code from the repo."""
 
         async with ctx.typing():
-            func = functools.partial(git_pull)
-            res = await self.bot.loop.run_in_executor(None, func)
-            stdout = res.stdout.decode("utf-8")
+            res = await run_shell("git pull")
+            stdout = res.decode("utf-8")
 
             fields = {"name": "Output", "value": f"```\n{stdout}```"}
             embed = self.bot.embed(ctx, fields=fields)
@@ -126,13 +134,12 @@ class Owner(commands.Cog):
         await self.bot.close()
 
     @commands.command(aliases=["sh"])
-    async def shell(self, ctx: utils.Context, *args):
+    async def shell(self, ctx: utils.Context, *, command: str):
         """Runs given arguments into shell."""
 
         async with ctx.typing():
-            func = functools.partial(subprocess.run, args, capture_output=True)
-            res = await self.bot.loop.run_in_executor(None, func)
-            stdout = res.stdout.decode("utf-8")
+            res = await run_shell(command)
+            stdout = res.decode("utf-8")
 
             syntax = args[-1].split(".")[-1] if args[0] == "cat" else ""
 
