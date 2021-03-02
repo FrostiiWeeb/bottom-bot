@@ -141,7 +141,7 @@ class Owner(commands.Cog):
             res = await run_shell(command)
             stdout = res.decode("utf-8")
 
-            syntax = args[-1].split(".")[-1] if args[0] == "cat" else ""
+            syntax = command[-1].split(".")[-1] if command.split()[0] == "cat" else ""
 
             content = f"```{syntax}\n{stdout}```"
             await (ctx << content)
