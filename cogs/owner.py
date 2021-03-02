@@ -8,6 +8,7 @@ import subprocess
 import functools
 import datetime
 import textwrap
+import humanize
 import asyncio
 import discord
 import string
@@ -21,16 +22,12 @@ class TimeReason(NamedTuple):
     time: dt
 
     def __repr__(self) -> str:
-        return f'<TimeReason time={self.time!r} reason="{self.reason}">'
+        return f"<TimeReason time={self.time!r} reason={self.reason!r}>"
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
-        humanized = humanize.precisedelta(
-            then,
-            suppress=["seconds"],
-            format="%0.0f"
-        )
-        return f"In {humanized}"
+        humanized = humanize.naturaldelta(then)
+        return humanized
 
 
 time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
