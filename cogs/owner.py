@@ -3,7 +3,6 @@
 from contextlib import redirect_stdout
 from datetime import datetime as dt
 from discord.ext import commands
-from collections import Counter
 from typing import NamedTuple
 import subprocess
 import functools
@@ -27,40 +26,6 @@ class TimeReason(NamedTuple):
 
     def __str__(self) -> str:
         then = self.time - dt.utcnow()
-        days = Counter({"days": then.days})
-        times = Counter()
-
-        while days["days"] > 365:
-            times["years"] += 1
-            days["days"] -= 1
-
-        while days["days"] > 30:
-            times["months"] += 1
-            days["days"] -= 1
-
-        while days["days"] > 7:
-            times["weeks"] += 1
-            days["days"] -= 1
-
-        while days["days"] > 1:
-            times["days"] += 1
-            days["days"] -= 1
-
-        fmt = []
-
-        if times["years"]:
-            fmt.append(f"{times.get('years')} years")
-
-        if times["months"]:
-            fmt.append(f"{times.get('months')} months")
-
-        if times["weeks"]:
-            fmt.append(f"{times.get('weeks')} weeks")
-
-        if times["days"]:
-            fmt.append(f"{times.get('days')} days")
-
-        return ", ".join(fmt)
 
 
 time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
@@ -182,7 +147,12 @@ class Owner(commands.Cog):
 
         env = {
             "ctx": ctx,
-            "codeblock": lambda c, l: f"```{l}\n{c}```"
+            "bot": ctx.bot,
+            "channel": ctx.channel,
+            "guild": ctx.guild,
+            "author": ctx.author,
+            "message": ctx.message,
+            "codeblock": lambda c, l: f"```py\n{c}```"
         }
         env.update(globals())
 
