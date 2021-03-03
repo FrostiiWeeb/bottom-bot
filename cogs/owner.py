@@ -74,7 +74,7 @@ class TimeConverter(commands.Converter):
             return TimeReason("Test", now)
 
 
-async def run_shell(command: str) -> str:
+async def run_shell(command: str) -> bytes:
     proc = await asyncio.create_subprocess_shell(
         command,
         stdout=asyncio.subprocess.PIPE,
@@ -97,7 +97,7 @@ class Owner(commands.Cog):
 
     @commands.command()
     async def reload(self, ctx: utils.Context):
-        """Realoads all the currently loaded extensions."""
+        """Reloads all the currently loaded extensions."""
 
         extensions = [*self.bot.extensions.keys()]
 
@@ -152,7 +152,7 @@ class Owner(commands.Cog):
             "guild": ctx.guild,
             "author": ctx.author,
             "message": ctx.message,
-            "codeblock": lambda c, l: f"```py\n{c}```"
+            "codeblock": lambda c: f"```py\n{c}```"
         }
         env.update(globals())
 
