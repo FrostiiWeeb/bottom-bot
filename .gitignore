@@ -26,3 +26,6 @@ var/
 
 # Our configuration files
 config.py
+
+# Pycharm
+.idea/

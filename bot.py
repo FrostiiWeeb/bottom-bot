@@ -10,7 +10,7 @@ import utils
 import time
 
 
-prefixes = ["\U0001f97a ", "\U0000005c\U0001f97a ", "\U0001f97a", "\U0000005c\U0001f97a"]
+prefixes = ["\U0001f97a ", "\U0000005c\U0001f97a ", "\U0001f97a", "\U0000005c\U0001f97a", "=="]
 
 
 desc = """
