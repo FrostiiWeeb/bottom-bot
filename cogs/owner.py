@@ -150,9 +150,10 @@ class Owner(commands.Cog):
             "guild": ctx.guild,
             "author": ctx.author,
             "message": ctx.message,
-            "codeblock": lambda c: f"```py\n{c}```"
+            "codeblock": lambda c: f"```py\n{c}```",
+            "discord": discord,
+            "commands": commands,
         }
-        env.update(globals())
 
         block = (
             "async def _eval_expr():\n" +
@@ -160,7 +161,7 @@ class Owner(commands.Cog):
         )
         out = io.StringIO()
         try:
-            exec(block, env, locals())
+            exec(block, env)
 
             with redirect_stdout(out):
                 res = await locals()["_eval_expr"]()
