@@ -161,10 +161,10 @@ class Owner(commands.Cog):
         )
         out = io.StringIO()
         try:
-            exec(block, env)
+            exec(block, env, env)
 
             with redirect_stdout(out):
-                res = await locals()["_eval_expr"]()
+                res = await env["_eval_expr"]()
         except Exception:
             out.close()
             tb = traceback.format_exc()
