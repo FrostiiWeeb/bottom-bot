@@ -159,12 +159,12 @@ class Owner(commands.Cog):
             textwrap.indent(code, "  ")
         )
         out = io.StringIO()
-        exec(block, env, locals())
-
         try:
+            exec(block, env, locals())
+
             with redirect_stdout(out):
                 res = await locals()["_eval_expr"]()
-        except Exception as e:
+        except Exception:
             out.close()
             tb = traceback.format_exc()
             fmt = f"```py\n{tb}```"
