@@ -27,5 +27,6 @@ var/
 # Our configuration files
 config.py
 
-# Pycharm
+# IDE Stuff
 .idea/
+.vscode/

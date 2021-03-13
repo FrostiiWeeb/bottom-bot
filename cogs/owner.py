@@ -1,20 +1,17 @@
 # -*- coding: utf-8 -*-
 
+import re
+import io
+import utils
+import asyncio
+import discord
+import textwrap
+import datetime
+import traceback
 from contextlib import redirect_stdout
 from datetime import datetime as dt
 from discord.ext import commands
 from typing import NamedTuple
-import subprocess
-import functools
-import datetime
-import textwrap
-import humanize
-import asyncio
-import discord
-import string
-import utils
-import io
-import re
 
 
 class TimeReason(NamedTuple):
@@ -35,7 +32,7 @@ time_regex = re.compile(r"""(?:(?P<seconds>[0-9]+)\s*(seconds?|secs?|s))?
                             (?:(?P<weeks>[0-9]+)\s*(weeks?|w))?
                             (?:(?P<months>[0-9]+)\s*(months?|mo))?
                             (?:(?P<years>[0-9]+)\s*(years?|yr?s?))?""",
-                            re.I | re.X)
+                        re.I | re.X)
 
 
 class TimeConverter(commands.Converter):
@@ -136,7 +133,8 @@ class Owner(commands.Cog):
             res = await run_shell(command)
             stdout = res.decode("utf-8")
 
-            syntax = command.split(".")[-1] if command.split()[0] == "cat" else ""
+            syntax = command.split(
+                ".")[-1] if command.split()[0] == "cat" else ""
 
             content = f"```{syntax}\n{stdout}```"
             await (ctx << content)
@@ -157,14 +155,20 @@ class Owner(commands.Cog):
         env.update(globals())
 
         block = (
-            "async def _eval_expr():\n" + \
+            "async def _eval_expr():\n" +
             textwrap.indent(code, "  ")
         )
         out = io.StringIO()
         exec(block, env, locals())
 
         with redirect_stdout(out):
-            res = await locals()["_eval_expr"]()
+            try:
+                res = await locals()["_eval_expr"]()
+            except Exception as e:
+                out.close()
+                tb = traceback.format_exc()
+                fmt = f"```py\n{tb}```"
+                return await ctx.send(fmt)
 
         if value := out.getvalue():
             out.close()
