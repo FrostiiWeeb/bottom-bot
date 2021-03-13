@@ -161,14 +161,14 @@ class Owner(commands.Cog):
         out = io.StringIO()
         exec(block, env, locals())
 
-        with redirect_stdout(out):
-            try:
+        try:
+            with redirect_stdout(out):
                 res = await locals()["_eval_expr"]()
-            except Exception as e:
-                out.close()
-                tb = traceback.format_exc()
-                fmt = f"```py\n{tb}```"
-                return await ctx.send(fmt)
+        except Exception as e:
+            out.close()
+            tb = traceback.format_exc()
+            fmt = f"```py\n{tb}```"
+            return await (ctx << fmt)
 
         if value := out.getvalue():
             out.close()
